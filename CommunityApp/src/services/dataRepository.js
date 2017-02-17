@@ -3,6 +3,9 @@ import {BindingSignaler} from 'aurelia-templating-resources';
 import {inject}	from 'aurelia-framework';
 import moment from 'moment';
 import {HttpClient} from 'aurelia-http-client';
+import {HttpClient as HttpFetch, json} from 'aurelia-fetch-client';
+import {EventAggregator} from 'aurelia-event-aggregator';
+import {NotificationPayload} from 'common/NotificationPayload';
 
 function filterAndFormat(pastOrFuture, events) {
 	var results = JSON.parse(JSON.stringify(events));
@@ -24,17 +27,25 @@ function filterAndFormat(pastOrFuture, events) {
 	return results;
 }
 
-@inject(BindingSignaler, HttpClient)
+@inject(BindingSignaler, HttpClient, 'apiRoot', HttpFetch, EventAggregator)
 export class DataRepository {
-	constructor(bindingSignaler, httpClient){
+	constructor(bindingSignaler, httpClient, apiRoot, httpFetch, eventAggregator){
+		this.httpFetch = httpFetch;
 		this.httpClient = httpClient;
-		setInterval(()=>{bindingSignaler.signal('check-freshness')},1000);
+		this.apiRoot = apiRoot;
+		this.eventAggregator = eventAggregator;
+		setInterval(()=> {bindingSignaler.signal('check-freshness')},1000);
+		setTimeout(()=> backgroundNotificationReceived(this.eventAggregator), 5000);
+	}
+
+	backgroundNotificationReceived(ea){
+		ea.publish(new NotificationPayload(moment().format("HH:mm:ss")));
 	}
 
 	getEvents(pastOrFuture) {
 			var promise = new Promise((resolve, reject) => {
 				if (!this.events) {
-					this.httpClient.get('http://localhost:27092/api/Events')
+					this.httpClient.get(this.apiRoot + '/api/Events')
 					.then(result=>{
 						var data = JSON.parse(result.response);
 						this.events = data.sort((a,b)=> a.dateTime >= b.dateTime ? 1 : 0);
@@ -43,15 +54,21 @@ export class DataRepository {
 				}
 				else {
 					resolve(filterAndFormat(pastOrFuture, this.events));
-				}
+				} 
 			});
 			return promise;
 		}
 
 	addJob(job){
 		var promise = new Promise((resolve,reject)=>{
-			this.jobsData.push(job);
-			resolve(job);
+			this.httpFetch.fetch(this.apiRoot + '/api/Jobs',{
+				method: 'Post',
+			body: json(job)
+			}).then(response => response.json())
+			.then(data => {
+				this.jobsData.push(data);
+				resolve(data);
+			}).catch(err=>reject(err));
 		});
 		return promise;
 	}	
@@ -59,9 +76,18 @@ export class DataRepository {
 	getJobsData(){
 		var promise = new Promise((resolve, reject)=>{
 			if(!this.jobsData){
-				this.jobsData = jobsData;
+				this.httpFetch.fetch(this.apiRoot + '/api/Jobs')
+				.then(result => result.json())
+				.then(data =>
+				{ 
+				this.jobsData = data
+				resolve(this.jobsData);
+				}).catch(err => reject(err));			
 			}
-			resolve(this.jobsData);
+			else
+			{
+				resolve(this.jobsData);
+			}
 		})	
 		return promise;
 	}

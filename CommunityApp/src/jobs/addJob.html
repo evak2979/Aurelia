@@ -2,7 +2,7 @@
 	<form if.bind="states" action="" submit.delegate="save()">
 		<div class="form-group">
 			<label for="title">Title</label>
-			<input type="text" value.bind="job.title" class="form-control" id="title" placeholder="Title">
+			<input type="text" value.bind="job.title & validate" class="form-control" id="title" placeholder="Title">
 		</div>
 		<div class="form-group"><label for="description">Description</label>
 		<textarea name="" id="description" cols="30" rows="5" value.bind="job.description" class="form-control" placeholder="Description">
@@ -38,5 +38,8 @@
 		</select>
 		</div>
 		<button type="submit" class="btn btn-primary">Save</button>
+		<ul if.bind="validationController.errors">
+			<li repeat.for="error of validationController.errors" style="color:red">${error.message}</li>
+		</ul>
 	</form>
 </template>

@@ -31,6 +31,9 @@
 		</div><!-- /.container-fluid -->
 	</nav>
 	<div class='container'>
+		<div style="background:lightGreen" show.bind="notification" click.delegate="clearNotification()">
+			Notification reveived: ${notification}
+		</div>
 		<div class='col-xs-10'>
 			<router-view name='mainContent'></router-view>
 		</div>
