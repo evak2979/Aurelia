@@ -1,0 +1,7 @@
+<template>
+	<div repeat.for="event of events">
+		<div>Index: ${$index}, First:${$first}, Last: ${$last}, Even: ${$even}, Odd: ${$odd}</div>
+		<div>${$parent.whoAreYou}</div>
+		<compose model.bind="event" view="events/event.html"></compose>
+	</div>
+</template>

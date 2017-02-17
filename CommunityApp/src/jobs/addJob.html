@@ -1,0 +1,42 @@
+<template>
+	<form if.bind="states" action="" submit.delegate="save()">
+		<div class="form-group">
+			<label for="title">Title</label>
+			<input type="text" value.bind="job.title" class="form-control" id="title" placeholder="Title">
+		</div>
+		<div class="form-group"><label for="description">Description</label>
+		<textarea name="" id="description" cols="30" rows="5" value.bind="job.description" class="form-control" placeholder="Description">
+
+		</textarea>
+		</div>
+		<div class="form-group"><label for="needDate">Need Date</label>
+		<input type="text" id="needDate" value.bind="job.needDate" placeholder="Need Date">
+		</div>
+		<div class="form-group"><label for="city">City</label>
+			<input type="text" id="city" value-bind="job.location.city" placeholder="city">	
+		</div>
+		<div class="form-group">
+			<label for="jobType">Job Type:</label>
+			<span repeat.for="jobType of jobTypes">
+			<input type="radio" name="jobType" value.bind="jobType" checked.bind="$parent.job.jobType">
+			${jobType}
+			</span>
+		</div>
+		<div class="form-group">
+			<label for="jobSkill">Job Skill:</label>
+			<span name="jobSkill" repeat.for="jobSkill of jobSkills">
+			<input type="checkbox" name="jobSkill" value.bind="jobSkill" checked.bind="$parent.job.jobSkills">
+			${jobSkill}
+			</span>
+		</div>		
+		<div>${job.jobSkills}</div>
+		<div class="form-group"></div>
+		<div class="form-group"><label for="state">State</label>		
+		<select name="" id="state" value.bind="job.location.state">
+			<option>Choose State</option>
+			<option repeat.for="state of states" model.bind="state.abbreviation">${state.name} (${state.abbreviation})</option>
+		</select>
+		</div>
+		<button type="submit" class="btn btn-primary">Save</button>
+	</form>
+</template>
