@@ -10,7 +10,7 @@
 		</textarea>
 		</div>
 		<div class="form-group"><label for="needDate">Need Date</label>
-		<input type="text" id="needDate" value.bind="job.needDate" placeholder="Need Date">
+		<input type="text" id="needDate" value.bind="job.needDate | dateFormat :'MM/YYYY' & updateTrigger: 'blur'" placeholder="Need Date">
 		</div>
 		<div class="form-group"><label for="city">City</label>
 			<input type="text" id="city" value-bind="job.location.city" placeholder="city">	

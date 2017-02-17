@@ -13,6 +13,10 @@ export class Sponsors {
 		this.styleObject = {background: "green"};
 		this.firstName = "Evan";
 		this.lastName = "Aktoudianakis";
+		this.trades = [{time: new Date, amount: 99.93}];
+		setTimeout(()=>{
+			this.trades.push({amount:33.54, time:new Date()})
+		}, 3000);
 	}
 
 	@computedFrom("firstName", "lastName")

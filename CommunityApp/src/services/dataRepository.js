@@ -1,5 +1,7 @@
 import {eventsData} from 'services/eventsData';
 import {jobsData, states, jobTypes, jobSkills} from 'services/jobsData';
+import {BindingSignaler} from 'aurelia-templating-resources';
+import {inject}	from 'aurelia-framework';
 import moment from 'moment';
 
 function filterAndFormat(pastOrFuture, events) {
@@ -22,7 +24,11 @@ function filterAndFormat(pastOrFuture, events) {
 	return results;
 }
 
+@inject(BindingSignaler)
 export class DataRepository {
+	constructor(bindingSignaler){
+		setInterval(()=>{bindingSignaler.signal('check-freshness')},1000);
+	}
 	addJob(job){
 		var promise = new Promise((resolve,reject)=>{
 			this.jobsData.push(job);
