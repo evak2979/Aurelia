@@ -35,7 +35,7 @@ export class DataRepository {
 		this.apiRoot = apiRoot;
 		this.eventAggregator = eventAggregator;
 		setInterval(()=> {bindingSignaler.signal('check-freshness')},1000);
-		setTimeout(()=> backgroundNotificationReceived(this.eventAggregator), 5000);
+		setTimeout(()=> this.backgroundNotificationReceived(this.eventAggregator), 5000);
 	}
 
 	backgroundNotificationReceived(ea){

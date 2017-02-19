@@ -8,14 +8,15 @@ import {inject} from 'aurelia-framework';
 export class Shell {
 	constructor(eventAgreggator) {
 		this.eventAgreggator = eventAgreggator;
-		this.eventAgreggator.subscribe(NotificationPayload, payload=>{
+		this.eventAgreggator.subscribe(NotificationPayload, payload =>
 			this.notification = payload.time
-		});
-		setInterval(()=> this.timeIs = moment().format("hh:mm:ss.SSS"),100);
-		setTimeout(() => this.backgroundNotificationReceived(this.eventAggregator)
-	};
+		);
+		setInterval(()=> this.timeIs = moment().format("hh:mm:ss.SSS"),100);		
+	}	
 
-	clearNotification
+	clearNotification(){
+		this.notification = null;
+	}
 
 	configureRouter(config, router) {
 		this.router = router;
